@@ -1,0 +1,24 @@
+{
+  "name": "textmode",
+  "version": "1.0.0",
+  "description": "commodore64 look alike functional website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "drs",
+  "license": "ISC",
+  "dependencies": {
+    "grunt": "latest",
+    "grunt-coffeelint": "latest",
+    "grunt-contrib-coffee": "latest",
+    "grunt-contrib-less": "latest",
+    "grunt-contrib-watch": "latest"
+  },
+  "devDependencies": {
+    "grunt": "latest",
+    "grunt-contrib-connect": "latest",
+    "grunt-contrib-copy": "latest",
+    "grunt-serve": "latest"
+  }
+}
