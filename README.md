@@ -41,4 +41,3 @@ Instructions
   ^ = XOR
 .
 .
-
