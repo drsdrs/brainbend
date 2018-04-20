@@ -10,8 +10,8 @@
     f = dec cell
     c = set cell to tempRegister
     v = set tempRegister to cell
-    x = set pointerX to tempregisterValue
-    y = set pointerY to tempregisterValue
+    x = set pointerX to tempregister
+    y = set pointerY to tempregister
     --- LOOP ---
     0-9 = repeat prev instruction, following numbers are multiplied
     --- MATH --- use operator on pointerValue and tempregister then copy result into tempregister
@@ -20,11 +20,15 @@
     & = AND
     | = OR
     ^ = XOR
+    TODO
+    > = Shift TmpRegister Right
+    < = Shift TmpRegister Right
+    b = replaced by tmpRegister value in realtime
 
     TODO ????? use full numbers in loops and use :"instructions":234 to surround them
 
    */
-  var alu, decStackCell, defaultSize, getStackCell, getTempRegister, incStackCell, instructionPointer, instructions, nextMsgType, parseInstructions, pointer, pointer2D, process, processInstructionSet, processing, resetStack, setPointer, setStackCell, setTempRegister, stack, stackLength, tempRegister;
+  var alu, decStackCell, defaultSize, getStackCell, getTempRegister, incStackCell, instructionPointer, instructions, instructionsPerCycle, nextMsgType, parseInstructions, pointer, pointer2D, process, processInstructionSet, processing, resetStack, setPointer, setStackCell, setTempRegister, stack, stackLength, tempRegister;
 
   instructions = "";
 
@@ -40,12 +44,12 @@
 
   pointer2D = new Uint8Array(2);
 
+  instructionsPerCycle = stackLength / 8;
+
   processing = false;
 
   tempRegister = new Uint8Array(1); // for temporary register as calculation
 
-  
-  //# should parse instructions before processing
   incStackCell = function() {
     return stack[pointer]++;
   };
@@ -81,6 +85,10 @@
       return setTempRegister(getStackCell() ^ getTempRegister());
     } else if (operator === "|") {
       return setTempRegister(getStackCell() | getTempRegister());
+    } else if (operator === "<") {
+      return setTempRegister(getTempRegister() << 1);
+    } else if (operator === ">") {
+      return setTempRegister(getTempRegister() >> 1);
     }
   };
 
@@ -92,7 +100,9 @@
     }
     instructionPointer = 0;
     pointer = 0;
-    return pointer2D = [0, 0];
+    pointer2D[0] = 0;
+    pointer2D[1] = 0;
+    return setTempRegister(0);
   };
 
   parseInstructions = function(instrUnparsed) {
@@ -138,7 +148,7 @@
   process = function(i) { // i=instruction
     if (i === "w" || i === "a" || i === "s" || i === "d") {
       return setPointer(i);
-    } else if (i === "+" || i === "-" || i === "^" || i === "&" || i === "|") {
+    } else if (i === "+" || i === "-" || i === "^" || i === "&" || i === "|" || i === "<" || i === ">") {
       return alu(i);
     } else if (i === "r") {
       return incStackCell();
@@ -165,7 +175,7 @@
     if (instrLen === 0) {
       return;
     }
-    len = stackLength / 18;
+    len = stackLength / 8;
     processing = true;
     x = 0;
     while ((x++) < len) {
@@ -216,11 +226,14 @@
         null; //throw 6660666
       }
       parseInstructions(n.data);
+    } else if (nextMsgType === "getCpuFreq") {
+      instructionsPerCycle = n.data;
     }
-    if (n.data === "S") { // set instructions
-      nextMsgType = "getInstructions";
-    }
-    if (n.data === 'G') { // get imagedata
+    if (n.data === 'S') { // set instructions
+      nextMsgType = 'getInstructions';
+    } else if (n.data === 'C') {
+      nextMsgType = 'getCpuFreq';
+    } else if (n.data === 'G') { // get imagedata
       self.postMessage(stack);
       processInstructionSet();
     }

@@ -1,13 +1,19 @@
-@import 'reset.less';
+@font-face {
+  font-family: 'c64';
+  src: url('fonts/C64_Pro_Mono-STYLE.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 
 html, body {
   height: 100%;
   width: 100%;
-  margin: 8px;
+  //margin: 8px;
   text-align:center;
   background: #888888;
-  font-family: monospace;
+  font-family: 'c64', monospace;
   //overflow: hidden;
+
 }
 
 canvas, #canvas {
@@ -17,10 +23,8 @@ canvas, #canvas {
   image-rendering: pixelated;
 }
 
-#textarea, #textOriginal {
+#textarea {
   background: #cccccc;
-  margin: 12px 10%;
-  width: 80%;
   word-break: break-all;
   font-size: 32px;
   letter-spacing: 8px;

@@ -8,6 +8,11 @@ init = ->
   textEl = document.getElementById 'textarea'
   textOriginalEl = document.getElementById 'textOriginal'
 
+  cpufreqRangeEL = document.getElementById 'cpufreq_range'
+  cpufreqNumberEL = document.getElementById 'cpufreq_number'
+
+  audioVolumeEL = document.getElementById 'volume'
+
   canvasEl.width = 256
   canvasEl.height = 256
   ctx = canvasEl.getContext '2d'
@@ -18,11 +23,11 @@ init = ->
 
   refreshAutomatic = true
 
+  audioVolume = 0
+
   wwCanvas = new Worker "worker.js"
 
-
-
-  sinetone = ->
+  setBuffer = ->
     sr = Pico.sampleRate
     bs = Pico.bufferSize
     bufferCnt = 0
@@ -32,8 +37,8 @@ init = ->
       i = 0
       while i < e.bufferSize
         pos = bs*bufferCnt
-        out[0][i] = audioData[pos+i] / 16
-        out[0][i] = audioData[pos+i] / 16
+        out[0][i] = audioData[pos+i] / 255 / 255 * audioVolume
+        out[1][i] = out[0][i]
         i++
       if (bufferCnt+1)*bs>audioData.length then bufferCnt = 0
       else bufferCnt++
@@ -54,10 +59,6 @@ init = ->
       data[pos+2] = wwData
       data[pos+3] = 255
     ctx.putImageData imageData, 0, 0
-
-
-
-
 
   prevTextValue = ""
 
@@ -87,10 +88,21 @@ init = ->
     console.log instrRaw
     # return false
 
+  changeVolume = (e)->
+    audioVolume = e.target.value
+
+  changeCpuFrequ = (e)->
+    cpufreqRangeEL.value = e.target.value
+    cpufreqNumberEL.value = e.target.value
+    wwCanvas.postMessage "C"
+    wwCanvas.postMessage e.target.value
+
   textOriginalEl.addEventListener "keyup", keyyy
 
+  cpufreqRangeEL.addEventListener "change", changeCpuFrequ
+  cpufreqNumberEL.addEventListener "change", changeCpuFrequ
 
-
+  audioVolumeEL.addEventListener "change", changeVolume
 
 
 
@@ -108,6 +120,6 @@ init = ->
 
   keyyy {target:textEl}
   cycle()
-  Pico.play sinetone()
+  Pico.play setBuffer()
 
 window.onload = init

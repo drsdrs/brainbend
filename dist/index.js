@@ -33,13 +33,16 @@
   })();
 
   init = function() {
-    var audioData, canvasEl, ctx, cycle, data, imageData, keyyy, nxtBtnEl, prevTextValue, refreshAutomatic, sinetone, startBtnEl, stopBtnEl, textEl, textOriginalEl, wwCanvas;
+    var audioData, audioVolume, audioVolumeEL, canvasEl, changeCpuFrequ, changeVolume, cpufreqNumberEL, cpufreqRangeEL, ctx, cycle, data, imageData, keyyy, nxtBtnEl, prevTextValue, refreshAutomatic, setBuffer, startBtnEl, stopBtnEl, textEl, textOriginalEl, wwCanvas;
     canvasEl = document.getElementById('canvas');
     nxtBtnEl = document.getElementById('nextFrame');
     startBtnEl = document.getElementById('start');
     stopBtnEl = document.getElementById('stop');
     textEl = document.getElementById('textarea');
     textOriginalEl = document.getElementById('textOriginal');
+    cpufreqRangeEL = document.getElementById('cpufreq_range');
+    cpufreqNumberEL = document.getElementById('cpufreq_number');
+    audioVolumeEL = document.getElementById('volume');
     canvasEl.width = 256;
     canvasEl.height = 256;
     ctx = canvasEl.getContext('2d');
@@ -47,8 +50,9 @@
     data = imageData.data;
     audioData = new Uint8Array(canvasEl.width * canvasEl.height);
     refreshAutomatic = true;
+    audioVolume = 0;
     wwCanvas = new Worker("worker.js");
-    sinetone = function() {
+    setBuffer = function() {
       var bs, bufferCnt, sr;
       sr = Pico.sampleRate;
       bs = Pico.bufferSize;
@@ -59,8 +63,8 @@
         i = 0;
         while (i < e.bufferSize) {
           pos = bs * bufferCnt;
-          out[0][i] = audioData[pos + i] / 16;
-          out[0][i] = audioData[pos + i] / 16;
+          out[0][i] = audioData[pos + i] / 255 / 255 * audioVolume;
+          out[1][i] = out[0][i];
           i++;
         }
         if ((bufferCnt + 1) * bs > audioData.length) {
@@ -133,7 +137,19 @@
       return console.log(instrRaw);
     };
     // return false
+    changeVolume = function(e) {
+      return audioVolume = e.target.value;
+    };
+    changeCpuFrequ = function(e) {
+      cpufreqRangeEL.value = e.target.value;
+      cpufreqNumberEL.value = e.target.value;
+      wwCanvas.postMessage("C");
+      return wwCanvas.postMessage(e.target.value);
+    };
     textOriginalEl.addEventListener("keyup", keyyy);
+    cpufreqRangeEL.addEventListener("change", changeCpuFrequ);
+    cpufreqNumberEL.addEventListener("change", changeCpuFrequ);
+    audioVolumeEL.addEventListener("change", changeVolume);
     nxtBtnEl.addEventListener("click", function() {
       refreshAutomatic = false;
       return cycle();
@@ -152,7 +168,7 @@
       target: textEl
     });
     cycle();
-    return Pico.play(sinetone());
+    return Pico.play(setBuffer());
   };
 
   window.onload = init;

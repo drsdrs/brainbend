@@ -9,8 +9,8 @@
   f = dec cell
   c = set cell to tempRegister
   v = set tempRegister to cell
-  x = set pointerX to tempregisterValue
-  y = set pointerY to tempregisterValue
+  x = set pointerX to tempregister
+  y = set pointerY to tempregister
   --- LOOP ---
   0-9 = repeat prev instruction, following numbers are multiplied
   --- MATH --- use operator on pointerValue and tempregister then copy result into tempregister
@@ -19,6 +19,10 @@
   & = AND
   | = OR
   ^ = XOR
+  TODO
+  > = Shift TmpRegister Right
+  < = Shift TmpRegister Right
+  b = replaced by tmpRegister value in realtime
 
   TODO ????? use full numbers in loops and use :"instructions":234 to surround them
 
@@ -34,10 +38,11 @@ stackLength = defaultSize*defaultSize
 pointer = 0
 pointer2D = new Uint8Array 2
 
+instructionsPerCycle = stackLength/8
+
 processing = false
 tempRegister = new Uint8Array 1 # for temporary register as calculation
 
-## should parse instructions before processing
 incStackCell = ()-> stack[pointer]++
 decStackCell = ()-> stack[pointer]--
 getStackCell = ()-> stack[pointer]
@@ -53,13 +58,17 @@ alu = (operator)->
   else if operator=="&" then setTempRegister getStackCell() & getTempRegister()
   else if operator=="^" then setTempRegister getStackCell() ^ getTempRegister()
   else if operator=="|" then setTempRegister getStackCell() | getTempRegister()
+  else if operator=="<" then setTempRegister getTempRegister()<<1
+  else if operator==">" then setTempRegister getTempRegister()>>1
 
 resetStack = ()->
   i = stackLength
   while i-- then stack[i] = 0
   instructionPointer = 0
   pointer = 0
-  pointer2D = [0, 0]
+  pointer2D[0] = 0
+  pointer2D[1] = 0
+  setTempRegister 0
 
 parseInstructions = (instrUnparsed)->
   parsedInst = ""
@@ -90,7 +99,7 @@ parseInstructions = (instrUnparsed)->
 
 process = (i)-> # i=instruction
   if(i=="w"||i=="a"||i=="s"||i=="d") then setPointer i
-  else if(i=="+"||i=="-"||i=="^"||i=="&"||i=="|") then alu i
+  else if(i=="+" || i=="-" || i=="^" || i=="&" || i=="|" || i=="<" || i==">") then alu i
   else if(i=="r") then incStackCell()
   else if(i=="f") then decStackCell()
   else if(i=="x") then pointer2D[0] = getTempRegister()
@@ -103,7 +112,7 @@ processInstructionSet = ->
   tempInstr = instructions
   instrLen = tempInstr.length
   return if instrLen==0
-  len = stackLength/18
+  len = stackLength/8
   processing = true
   x = 0
   while (x++)<len
@@ -126,14 +135,19 @@ setPointer = (dir)->
 
 
 nextMsgType = ""
+
 self.onmessage = (n) ->
   if nextMsgType == "getInstructions"
     nextMsgType = ""
     while processing==true then null#throw 6660666
     parseInstructions n.data
-  if n.data == "S" # set instructions
-    nextMsgType = "getInstructions"
-  if n.data == 'G' # get imagedata
+  else if nextMsgType == "getCpuFreq"
+    instructionsPerCycle = n.data
+  if n.data == 'S' # set instructions
+    nextMsgType = 'getInstructions'
+  else if n.data == 'C'
+    nextMsgType = 'getCpuFreq'
+  else if n.data == 'G' # get imagedata
     self.postMessage stack
     processInstructionSet()
   return
