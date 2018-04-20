@@ -39,5 +39,5 @@ Instructions
   | = OR
   
   ^ = XOR
-.
+
 .
