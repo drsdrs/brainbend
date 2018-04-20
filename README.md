@@ -39,4 +39,3 @@ Instructions
   | = OR
   
   ^ = XOR
-
