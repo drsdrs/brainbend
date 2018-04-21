@@ -42,4 +42,4 @@ Instructions
 
 
 TST
-x2
+x
