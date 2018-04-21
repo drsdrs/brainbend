@@ -42,5 +42,5 @@ Instructions
 
 
 TST
-x
+x2
 234
