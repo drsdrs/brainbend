@@ -41,5 +41,5 @@ Instructions
   ^ = XOR
 
 
-TS
+T
 
