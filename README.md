@@ -43,4 +43,3 @@ Instructions
 
 TST
 x2
-23
