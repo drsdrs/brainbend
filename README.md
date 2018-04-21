@@ -41,3 +41,4 @@ Instructions
   ^ = XOR
 
 
+TST
