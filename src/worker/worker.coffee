@@ -19,12 +19,9 @@
   & = AND
   | = OR
   ^ = XOR
-  TODO
+
   > = Shift TmpRegister Right
   < = Shift TmpRegister Right
-  b = replaced by tmpRegister value in realtime
-
-  TODO ????? use full numbers in loops and use :"instructions":234 to surround them
 
 ###
 
@@ -112,10 +109,10 @@ processInstructionSet = ->
   tempInstr = instructions
   instrLen = tempInstr.length
   return if instrLen==0
-  len = stackLength/8
+  len = instructionsPerCycle
   processing = true
   x = 0
-  while (x++)<len
+  while len--
     if instructionPointer == instrLen then instructionPointer = 0
     process tempInstr[instructionPointer]
     instructionPointer++
@@ -142,7 +139,8 @@ self.onmessage = (n) ->
     while processing==true then null#throw 6660666
     parseInstructions n.data
   else if nextMsgType == "getCpuFreq"
-    instructionsPerCycle = n.data
+    instructionsPerCycle = parseInt n.data
+    nextMsgType = ''
   if n.data == 'S' # set instructions
     nextMsgType = 'getInstructions'
   else if n.data == 'C'

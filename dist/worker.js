@@ -20,12 +20,9 @@
     & = AND
     | = OR
     ^ = XOR
-    TODO
+
     > = Shift TmpRegister Right
     < = Shift TmpRegister Right
-    b = replaced by tmpRegister value in realtime
-
-    TODO ????? use full numbers in loops and use :"instructions":234 to surround them
 
    */
   var alu, decStackCell, defaultSize, getStackCell, getTempRegister, incStackCell, instructionPointer, instructions, instructionsPerCycle, nextMsgType, parseInstructions, pointer, pointer2D, process, processInstructionSet, processing, resetStack, setPointer, setStackCell, setTempRegister, stack, stackLength, tempRegister;
@@ -175,10 +172,10 @@
     if (instrLen === 0) {
       return;
     }
-    len = stackLength / 8;
+    len = instructionsPerCycle;
     processing = true;
     x = 0;
-    while ((x++) < len) {
+    while (len--) {
       if (instructionPointer === instrLen) {
         instructionPointer = 0;
       }
@@ -227,7 +224,8 @@
       }
       parseInstructions(n.data);
     } else if (nextMsgType === "getCpuFreq") {
-      instructionsPerCycle = n.data;
+      instructionsPerCycle = parseInt(n.data);
+      nextMsgType = '';
     }
     if (n.data === 'S') { // set instructions
       nextMsgType = 'getInstructions';

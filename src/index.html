@@ -11,12 +11,11 @@ r^x+scy^x-cd&avsrdrv+x
 <html>
 <head>
   <meta charset="utf-8">
-  <title>WebWorker</title>
+  <title>BRAINBEND</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
   <link rel="stylesheet" href="index.css" media="screen" title="no title" charset="utf-8">
-  <script type="text/javascript" src='pico.min.js'></script>
-  <script type="text/javascript" src='index.js'></script>
+
 </head>
 <body>
   <hr>
@@ -33,25 +32,69 @@ r^x+scy^x-cd&avsrdrv+x
       <div id="textarea" class="h-100 w-100 d-inline-block" name="textarea"></div>
     </div>
 
+
   </div><div class="row">
     <div class="form-group">
       <label for="textOriginal">Coding window:</label>
-      <textarea class="form-control" rows="5" id="textOriginal"></textarea>
+      <textarea class="form-control" rows="5" id="textOriginal">d882s882rv^yrcvxdr+y</textarea>
     </div>
 
     <input id="volume" type="range" name="volume" value="0" max="255" min=0 step="1"><label for="volume">Volume</label>
+    <br>
     <button id="nextFrame" type="button" name="button">NXT</button>
     <button id="start" type="button" name="button">START</button>
     <button id="stop" type="button" name="button">STOP</button>
-    <div id="cpufreq">Instructions per frame
-      <input id="cpufreq_range" type="range" name="" value="0" max="65536" min=0 step="8">
-      <input id='cpufreq_number' type="number" name="" value="0" max="65536" min=0 step="8">
+    <div id="cpufreq">
+      <label for="cpufreq_range">Instructions per frame:</label>
+      <input id="cpufreq_range" type="range" name="" value="8192" max="524288" min=1 step="1">
+      <input id='cpufreq_number' type="number" name="" value="8192" max="524288" min=1 step="1">
     </div>
 
+  </div><div class="row">
+
+  <div class="instructions col-sm-12">
+    <h2>Instructions:</h2>
+    <span>
+      <h4> --- STACK --- </h4>
+      w = pointer up<br>
+      s = pointer down<br>
+      a = pointer left<br>
+      d = pointer right<br>
+      r = inc cell<br>
+      f = dec cell<br>
+      c = set cell to tempRegister<br>
+      v = set tempRegister to cell<br>
+      x = set pointerX to tempregister<br>
+      y = set pointerY to tempregister<br>
+      <h4> --- LOOP ---</h4>
+      0-9 = repeat prev instruction, following numbers are multiplied<br>
+      <h4> --- MATH ---</h4>
+      use operator on pointerValue and tempregister then copy result into tempregister<br>
+      + = add<br>
+      - = remove<br>
+      & = AND<br>
+      | = OR<br>
+      ^ = XOR<br>
+      &gt; = Shift TmpRegister Right<br>
+      &lt; = Shift TmpRegister Right<br>
+    </span>
   </div>
+
+</div><div class="row">
+
+  <div class="instructions col-sm-12">
+    <h2>Examples:</h2>
+    <span>
+      d882s882rv^yrcvxdr+y<br>
+      r^x+scy^x-cd&avsrdrv+x<br>
+    </span>
+  </div>
+
+</div>
 </div>
 
-
+<script type="text/javascript" src='pico_modified.js'></script>
+<script type="text/javascript" src='index.js'></script>
 
 </body>
 </html>

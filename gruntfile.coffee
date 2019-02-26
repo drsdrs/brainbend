@@ -53,7 +53,7 @@ module.exports = (grunt) ->
     connect:
         server:
           options:
-            port: 8000,
+            port: 3000,
             hostname: '*'
 
   grunt.loadNpmTasks 'grunt-contrib-watch'

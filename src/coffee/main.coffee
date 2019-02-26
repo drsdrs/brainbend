@@ -85,17 +85,20 @@ init = ->
     prevTextValue = e.target.value
     wwCanvas.postMessage "S"
     wwCanvas.postMessage instrRaw
-    console.log instrRaw
-    # return false
+
 
   changeVolume = (e)->
     audioVolume = e.target.value
+    if Pico.isPlaying == false
+      console.log 'Start playing'
+      Pico.play setBuffer()
 
   changeCpuFrequ = (e)->
     cpufreqRangeEL.value = e.target.value
     cpufreqNumberEL.value = e.target.value
     wwCanvas.postMessage "C"
     wwCanvas.postMessage e.target.value
+    console.log e.target.value
 
   textOriginalEl.addEventListener "keyup", keyyy
 
@@ -120,6 +123,6 @@ init = ->
 
   keyyy {target:textEl}
   cycle()
-  Pico.play setBuffer()
+
 
 window.onload = init

@@ -133,18 +133,21 @@
       }
       prevTextValue = e.target.value;
       wwCanvas.postMessage("S");
-      wwCanvas.postMessage(instrRaw);
-      return console.log(instrRaw);
+      return wwCanvas.postMessage(instrRaw);
     };
-    // return false
     changeVolume = function(e) {
-      return audioVolume = e.target.value;
+      audioVolume = e.target.value;
+      if (Pico.isPlaying === false) {
+        console.log('Start playing');
+        return Pico.play(setBuffer());
+      }
     };
     changeCpuFrequ = function(e) {
       cpufreqRangeEL.value = e.target.value;
       cpufreqNumberEL.value = e.target.value;
       wwCanvas.postMessage("C");
-      return wwCanvas.postMessage(e.target.value);
+      wwCanvas.postMessage(e.target.value);
+      return console.log(e.target.value);
     };
     textOriginalEl.addEventListener("keyup", keyyy);
     cpufreqRangeEL.addEventListener("change", changeCpuFrequ);
@@ -167,8 +170,7 @@
     keyyy({
       target: textEl
     });
-    cycle();
-    return Pico.play(setBuffer());
+    return cycle();
   };
 
   window.onload = init;
@@ -231,9 +233,9 @@
       initScreen() {
         var cellEl, j, k, ref, ref1, results, rowEl, x, y;
         results = [];
-        for (y = j = 0, ref = this.SCREENSIZE.h; 0 <= ref ? j < ref : j > ref; y = 0 <= ref ? ++j : --j) {
+        for (y = j = 0, ref = this.SCREENSIZE.h; (0 <= ref ? j < ref : j > ref); y = 0 <= ref ? ++j : --j) {
           rowEl = document.createElement('ul');
-          for (x = k = 0, ref1 = this.SCREENSIZE.w; 0 <= ref1 ? k < ref1 : k > ref1; x = 0 <= ref1 ? ++k : --k) {
+          for (x = k = 0, ref1 = this.SCREENSIZE.w; (0 <= ref1 ? k < ref1 : k > ref1); x = 0 <= ref1 ? ++k : --k) {
             cellEl = document.createElement('li');
             cellEl.innerHTML = '&nbsp;';
             rowEl.appendChild(cellEl);
